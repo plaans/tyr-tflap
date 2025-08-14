@@ -1,0 +1,28 @@
+Bootstrap: docker
+From: ubuntu:latest
+
+%setup
+REPO_ROOT=`dirname $SINGULARITY_BUILDDEF`
+cp -r $REPO_ROOT/ $SINGULARITY_ROOTFS/planner
+
+%post
+apt-get update
+apt-get -y install g++ make
+cd /planner
+make clean
+make all
+
+%runscript
+DOMAINFILE=$1
+PROBLEMFILE=$2
+PLANFILE=$3
+/planner/tflap $DOMAINFILE $PROBLEMFILE $PLANFILE
+
+%labels
+Name        TFLAP
+Description 2018 version of TFLAP
+Authors     Oscar Sapena Vercher <ossaver@upv.es> and Eva Onaindia de la Rivaherrera <onaindia@dsic.upv.es>
+SupportsDerivedPredicates no
+SupportsQuantifiedPreconditions yes
+SupportsQuantifiedEffects yes
+
